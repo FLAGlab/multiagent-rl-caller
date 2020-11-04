@@ -1,8 +1,19 @@
 import numpy as np
 
+# menores de 12
+MENORES = 0
+# 12 a 17
+ADOLECENETES = 1
+# 18 - 30
+JOVENES = 2
+# 30 - 50
+ADULTOS = 3
+# 50 +
+ADULTOS_MAYORES = 4
+
 
 class Survey():
-    def __init__(self, id, socioeconomic, age, urban):
+    def __init__(self, id, socioeconomic, age, urban=True):
         self.id = id
         self.complete = False
         self.socioeconomic = socioeconomic
@@ -29,7 +40,7 @@ class Study():
         self.num_surveys = num_surveys
         self.surveys = np.array([])
 
-    def add_survey(self, socioeconomic, age, urban):
+    def add_survey(self, socioeconomic, age, urban=True):
         if self.num_surveys > len(self.surveys):
             survey = Survey(len(self.surveys), socioeconomic=socioeconomic, age=age, urban=urban)
             self.surveys = np.append(self.surveys, survey)
@@ -48,7 +59,10 @@ class Study():
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.__dict__ == other.__dict__
+            if len(self.surveys) == 0:
+                return len(self.surveys) == len(other.surveys)
+            else:
+                return self.surveys == other.surveys
         else:
             return False
 
@@ -69,3 +83,12 @@ class World():
     def add_study(self, study):
         self.studies = np.append(self.studies, study)
         self.num_studies = len(self.studies)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            if self.num_studies == 0:
+                return self.num_studies == other.num_studies
+            else:
+                return self.studies == other.studies
+        else:
+            return False
