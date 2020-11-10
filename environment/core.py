@@ -52,6 +52,9 @@ class Study():
                 and survey.is_urban == urban
                 and not survey.complete]
 
+    def summary(self):
+        return None
+
     def complete_survey(self, id):
         for i in range(len(self.surveys)):
             if self.surveys[i].id == id:
@@ -73,12 +76,16 @@ class Study():
 class Agent():
     def __init__(self, id):
         self.id = id
+        self.reward = None
+        self.action = None
 
 
 class World():
-    def __init__(self):
+    def __init__(self, accept_probability=None, succes_reward=None, fail_reward=None):
         self.num_studies = 0
         self.studies = []
+        self.accept_probability = accept_probability
+        self.succes_reward = succes_reward
 
     def add_study(self, study):
         self.studies.append(study)
@@ -87,6 +94,21 @@ class World():
     def clean(self):
         self.num_studies = 0
         self.studies = []
+
+    def step(self):
+        for agent in self.agents:
+            if self.accept_probability(agent) > 0.5:
+                agent.reward = self.succes_reward(agent)
+                self.studies[agent.action[0]].complete_survey(agent.action[1])
+            else:
+                agent.reward = self.fail_reward
+            agent.action = None
+
+    def observe(self):
+        return [(study.id, study.summary()) for study in self.studies]
+
+    def get_surveys(self, id_study, socioeconomic, age, urban):
+        return self.studies[id_study].get_surveys(socioeconomic, age, urban)
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

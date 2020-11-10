@@ -63,3 +63,5 @@ class Scenario():
         world.add_study(politica)
         world.add_study(medios)
         world.add_study(covid)
+
+    # def reward(self, agent, world):
