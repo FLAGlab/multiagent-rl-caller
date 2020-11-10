@@ -62,7 +62,7 @@ class Study():
             if len(self.surveys) == 0:
                 return len(self.surveys) == len(other.surveys)
             else:
-                return self.surveys == other.surveys
+                return (self.surveys == other.surveys).all()
         else:
             return False
 
@@ -77,17 +77,21 @@ class Agent():
 
 class World():
     def __init__(self):
-        self.num_studies = None
-        self.studies = np.array([])
+        self.num_studies = 0
+        self.studies = []
 
     def add_study(self, study):
-        self.studies = np.append(self.studies, study)
+        self.studies.append(study)
         self.num_studies = len(self.studies)
+
+    def clean(self):
+        self.num_studies = 0
+        self.studies = []
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             if self.num_studies == 0:
-                return self.num_studies == other.num_studies
+                return other.num_studies == 0
             else:
                 return self.studies == other.studies
         else:
